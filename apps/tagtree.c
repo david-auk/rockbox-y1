@@ -131,6 +131,16 @@ static uint32_t uniqbuf[UNIQBUF_SIZE / sizeof(uint32_t)];
 #define RELOAD_TAGTREE (-1024)
 
 static int(*qsort_fn)(const char*, const char*, size_t);
+static bool qsort_ignore_leading_the;
+
+static const char *canonicalartist_sort_name(const char *name)
+{
+    if (!strncasecmp(name, "The ", 4))
+        return name + 4;
+
+    return name;
+}
+
 /* dummmy functions to allow compatibility strncasecmp */
 static int strnatcasecmp_n(const char *a, const char *b, size_t n)
 {
@@ -384,6 +394,7 @@ static int get_tag(int *tag)
         TAG_MATCH("%format", var_format) \
         TAG_MATCH("%reload", menu_reload) \
         TAG_MATCH("filename", tag_filename) \
+        TAG_MATCH("mediatype", tag_mediatype) \
         TAG_MATCH("basename", tag_virt_basename) \
         TAG_MATCH("tracknum", tag_tracknumber) \
         TAG_MATCH("composer", tag_composer) \
@@ -910,6 +921,17 @@ static int compare(const void *p1, const void *p2)
 {
     struct tagentry *e1 = (struct tagentry *)p1;
     struct tagentry *e2 = (struct tagentry *)p2;
+
+    if (qsort_ignore_leading_the)
+    {
+        const char *name1 = canonicalartist_sort_name(e1->name);
+        const char *name2 = canonicalartist_sort_name(e2->name);
+        int result = qsort_fn(name1, name2, MAX_PATH);
+
+        if (result != 0)
+            return result;
+    }
+
     return qsort_fn(e1->name, e2->name, MAX_PATH);
 }
 
@@ -1834,6 +1856,8 @@ entry_skip_formatter:
 
     if (sort)
     {
+        qsort_ignore_leading_the = (tag == tag_virt_canonicalartist);
+
         if (global_settings.interpret_numbers)
             qsort_fn = sort_inverse ? strnatcasecmp_n_inv : strnatcasecmp_n;
         else

@@ -316,3 +316,4 @@ __pycache__
 
 # /utils/time-sync/
 /utils/time-sync/time-sync
+/android/build
