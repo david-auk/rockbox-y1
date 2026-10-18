@@ -1705,30 +1705,8 @@ static int retrieve_entries(struct tree_context *c, int offset, bool init)
     tree_lock_cache(c);
     struct tagentry *dptr = core_get_data(c->cache.entries_handle);
 
-    if (tag != tag_title && tag != tag_filename)
-    {
-        if (offset == 0)
-        {
-            dptr->newtable = TABLE_ALLSUBENTRIES;
-            dptr->name = ID2P(LANG_TAGNAVI_ALL_TRACKS);
-            dptr->customaction = ONPLAY_NO_CUSTOMACTION;
-            dptr++;
-            current_entry_count++;
-            c->special_entry_count++;
-        }
-        if (offset <= 1)
-        {
-            dptr->newtable = TABLE_NAVIBROWSE;
-            dptr->name = ID2P(LANG_TAGNAVI_RANDOM);
-            dptr->extraseek = -1;
-            dptr->customaction = ONPLAY_NO_CUSTOMACTION;
-            dptr++;
-            current_entry_count++;
-            c->special_entry_count++;
-        }
-
-        total_count += 2;
-    }
+    /* Keep database lists free of automatic [All tracks] and [Random]
+     * entries. Shuffle is an explicit item in the Music menu instead. */
 
     while (tagcache_get_next(&tcs, tcs_buf, tcs_bufsz))
     {
