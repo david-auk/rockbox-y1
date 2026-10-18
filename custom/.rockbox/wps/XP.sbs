@@ -1,0 +1,99 @@
+# Theme:XP
+# Version:1.0 (9/9/2025)
+# Device: iPod Video/Classic
+# License: CC-BY-SA
+# Creator: VB
+#
+#
+# Credits to other creators:
+# This theme wouldn't have been possible without the earlier work of:
+# creators of ipodmod3blk (K4sum1), ipodmod3blkfixed (Paul Sauro),
+# adwaitapod (evan Dook), iRetro (J Donsen), iPod reFresh (Ciprian Dragu)
+# For the battery, hold, and disk access icons, credits to K4sum1
+# For the concept, credits to Microsoft.. but everyone already knows this lol
+# Go listen to Syko, Gangsta Nutt, F.T.S. and Sarkastik, who are my fav artists from my home state of Washington who I believe deserve a shoutout!
+# For suggestions/requests/other inquiries, dm me on Reddit: u/suzdali
+
+
+%Fl(5,20-windows-xp-tahoma.fnt)
+%Fl(6,16-windows-xp-tahoma.fnt)
+%Fl(7,18-windows-xp-tahoma.fnt)
+# Load Backdrop
+%X(xpsbs.bmp)
+%xl(B,battery.bmp,0,0,24)
+%xl(O,Hold Icon - SBS.bmp,0,0)
+%xl(J,volstatus.bmp,0,0,2)
+
+
+# Battery
+%V(264,226,19,10,-)
+%?bp<%?bc<%t(1.0)%xd(Ba);%t(1.0)%xd(Bb)|%xd(Bc)>|%?bl<%xd(Bd)|%xd(Bd)|%xd(Be)|%xd(Bf)|%xd(Bg)|%xd(Bh)|%xd(Bi)|%xd(Bj)|%xd(Bk)|%xd(Bl)|%xd(Bm)|%xd(Bn)|%xd(Bo)|%xd(Bp)|%xd(Bq)|%xd(Br)|%xd(Bs)|%xd(Bt)|%xd(Bu)|%xd(Bv)|%xd(Bw)|%xd(Bx)>>#
+
+
+# Battery text
+#%V(244,224,20,14,6)%Vf(FFFFFF)%Vb(000000)
+#%al%bl
+#
+
+# Time Bar
+%V(287,223,32,14,5)%Vf(FFFFFF)%Vb(000000)
+%s%al%?cf<%cH:%cM|%cl:%cM>
+
+
+# Hold Icon
+%V(5,3,7,10,-)%Vf(F4F4F4)%Vb(000000)
+%?mh<%xd(O)|%?mr<%xd(O)>>
+
+# default iconset viewport
+%Vi(-,0,10,320,170,1)
+
+# main ui viewport
+#%Vi(MainMenu,10,30,256,220,1)
+
+# if we are on the main screen, draw the list using viewport 'main'
+%?if(%cs, = , 1)<%Lb(MainMenuVP,64,64,tile)%Vd(titlebar)>
+
+# main viewport
+%Vl(MainMenuVP,0,0,64,64,1) # the coordinates here are relative to the %Lb's width and height
+%xl(M,xpiconsshaded.bmp,0,0,9) # normal icons
+%xl(S,xpiconsselect.bmp,0,0,9) # selected icons
+%?Lc<%xd(S, %LN)|%xd(M, %LN)> # highlights selected icons
+
+
+#Trying to add album art#
+
+# 	Display bar on bottom with album art, track info or volume indicator as necessary
+%?mp<|%?C<%Vd(albumart)%Vd(currenttrack)|%Vd(currenttrackshiftedleft)>|%?C<%Vd(albumart)%Vd(currenttrack)|%Vd(currenttrackshiftedleft)>>
+#
+
+
+#	Current Track shifted left
+%Vl(currenttrack,42,186,190,-,5)%Vf(ffffff)%Vb(F4F4F4)
+%s%al%?it<%it|%fn>
+
+#	Current Artist shifted left
+%Vl(currenttrack,42,203,190,-,7)%Vf(ffffff)%Vb(F4F4F4)
+%s%al%?ia<%ia>
+
+#	Current Track shifted left
+%Vl(currenttrackshiftedleft,42,186,190,-,5)%Vf(ffffff)%Vb(F4F4F4)
+%s%al%?it<%it|%fn>
+
+#	Current Artist shifted left
+%Vl(currenttrackshiftedleft,42,203,190,-,7)%Vf(ffffff)%Vb(F4F4F4)
+%s%al%?ia<%ia>
+
+# 	Album Art
+%Vl(albumart,6,186,30,30,-)%Vf(ffffff)%Vb(F4F4F4)
+%Cl(0,0,30,30)%Vf(ffffff)%Vb(F4F4F4)
+%Cd
+#
+
+# Track background
+#%Vl(trackbg,0,208,320,32,-)%Vf(ffffff)%Vb(F4F4F4)
+#%xd(A)
+#
+
+# Mute
+%V(242,223,17,16,-)
+%?pv<%xd(Jb)|%xd(Ja)|%xd(Ja)|%xd(Ja)>

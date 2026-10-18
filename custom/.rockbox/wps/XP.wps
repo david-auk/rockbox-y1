@@ -1,0 +1,96 @@
+# Theme:XP
+# Version:1.0 (9/9/2025)
+# Device: iPod Video/Classic
+# License: CC-BY-SA
+# Creator: VB
+#
+#
+# Credits to other creators:
+# This theme wouldn't have been possible without the earlier work of:
+# creators of ipodmod3blk (K4sum1), ipodmod3blkfixed (Paul Sauro),
+# adwaitapod (evan Dook), iRetro (J Donsen), iPod reFresh (Ciprian Dragu)
+# For the battery, hold, and disk access icons, credits to K4sum1
+# For the concept, credits to Microsoft.. but everyone already knows this lol
+# Go listen to Syko, Gangsta Nutt, F.T.S. and Sarkastik, who are my fav artists from my home state of Washington who I believe deserve a shoutout!
+# For suggestions/requests/other inquiries, dm me on Reddit: u/suzdali
+
+
+# Hide The Status Bar
+%wd
+
+# Load Backdrop
+%X(xpwps1shaded.bmp)
+
+# Preload Fonts
+%Fl(3,20-windows-xp-tahoma.fnt)
+%Fl(4,16-windows-xp-tahoma.fnt)
+%Fl(5,18-windows-xp-tahoma.fnt)
+
+
+# Preload Images
+#%xl(A,aa.bmp,0,0)
+%xl(B,battery.bmp,0,0,24)
+%xl(C,seek prog1.bmp,0,0)
+%xl(D,seek back1.bmp,0,0)
+%xl(E,volumeslider.bmp,0,0)
+%xl(H,playpause.bmp,0,0,2)
+%xl(J,muted.bmp,0,0,2)
+%xl(K,volume prog.bmp,0,0)
+%xl(L,volume back.bmp,0,0)
+%xl(O,Hold Icon - SBS.bmp,0,0)
+%xl(Q,seek slider.bmp,0,0)
+
+# Album Art Settings
+%Cl(0,0,94,94,c,c)
+# Album Art
+%V(135,33,94,94,-)
+%?C<%Cd>
+
+# Battery
+%V(264,226,19,10,-)
+%?bp<%?bc<%t(1.0)%xd(Ba);%t(1.0)%xd(Bb)|%xd(Bc)>|%?bl<%xd(Bd)|%xd(Bd)|%xd(Be)|%xd(Bf)|%xd(Bg)|%xd(Bh)|%xd(Bi)|%xd(Bj)|%xd(Bk)|%xd(Bl)|%xd(Bm)|%xd(Bn)|%xd(Bo)|%xd(Bp)|%xd(Bq)|%xd(Br)|%xd(Bs)|%xd(Bt)|%xd(Bu)|%xd(Bv)|%xd(Bw)|%xd(Bx)>>#
+
+# Battery text
+%V(244,224,20,14,4)%Vf(FFFFFF)%Vb(000000)
+%al%bl
+#
+
+# Hold Icon
+#%V(5,3,7,10,-)%Vf(F4F4F4)%Vb(000000)
+#%?mh<%xd(O)|%?mr<%xd(O)>>
+
+
+# Time Bar
+%V(287,223,32,14,3)%Vf(FFFFFF)%Vb(000000)
+%s%al%?cf<%cH:%cM|%cl:%cM>
+
+
+# Title
+%V(90,131,180,22,3)%Vf(FFFFFF)
+%ac%s%?it<%s%it|%fn>
+# Artist
+%V(90,145,180,22,3)%Vf(FFFFFF)
+%ac%s%?ia<%ia|%?d(2)<%d(2)|%Sx(Artist)>>
+# Album
+%V(90,161,180,22,5)%Vf(FFFFFF)
+%ac%s%?id<%id|%?d(1)<%d(1)|%Sx(Album)>>
+
+
+# Progress Bar
+%V(94,183,176,7,-)
+
+%pb(0,0,176,7,C,backdrop,D,slider,Q)
+
+
+# Mute
+%V(152,196,13,28,-)
+%?pv<%xd(Jb)|%xd(Ja)|%xd(Ja)|%xd(Ja)>
+
+# Volume
+%V(166,197,40,10,-)
+%pv(0,0,40,10,K,backdrop,L,slider,E)
+
+
+#-- Play & Pause Icons
+%V(78,192,19,40,-)
+%?mp<|%xd(Ha)|%xd(Hb)||||||>

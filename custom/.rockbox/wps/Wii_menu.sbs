@@ -1,0 +1,128 @@
+# Theme: Wii_menu
+# Version 2.0
+# Last Update: 01/03/2026
+# Improved backgrounds, minor icon pixel art improvements, correcting text alignments, switched mii file names
+# License: CC-BY-SA 3.0
+# By: Monica G.
+# Description: Main menu based on the Nintendo Wii channel menu and WPS based on the Wii Mii maker!
+# The mii shown for no album art is set as the default male mii. To change to the default female mii, switch the file names of "mii_alternate" or "mii_album"
+# The male/female mii can also be edited in the wps file under # Preload images by replacing "%xl(mii,mii_album.bmp,0,0)" with "%xl(mii,mii_alternate.bmp,0,0)"
+# The code for the tile based menu screen code is based on win95 by Vera B!
+# Other coding is based on my previous theme (Rainbow_Icons, based on iPod reFresh by Ciprian Dragu (based on FreshOS by c-yu (yuuiko)) and SNARTY by Simon Anden)
+# Icons based on my previous themes: Rainbow_Icons, MOTHERBOARD. Volume icon is based on iPod reFresh by Ciprian Dragu.
+
+# Hide The Status Bar
+%wd
+
+# Preload Fonts
+%Fl(4,34-digital7mono.fnt)
+%Fl(6,16-Adobe-Helvetica.fnt)
+%Fl(7,21-Adobe-Helvetica-Bold.fnt)
+
+# Load Backdrop
+%X(Wii_menu_sbs.bmp)
+%xl(B,battery.bmp,0,0,25)
+%xl(disk,disk_access.bmp,0,0,2)
+%xl(playmodes,playmodes.bmp,0,0,9)
+%xl(shuffle,shuffle.bmp,0,0,2)
+%xl(repeat,repeat_status.bmp,0,0,5)
+%xl(lock,lock.bmp,0,0,3)
+%xl(usb_connected,usb_connected.bmp,0,0)
+
+# Display Viewports
+%?if(%cs, =, 21)<%VI(clearScreen)%Vd(usb_connected)|%Vd(info)<%VI(menu)%Vd(info)>>
+
+# Clear Screen
+%Vi(clearScreen,0,0,1,1,-)
+
+# Hold Status
+%V(276,196,12,16,-)
+%?mh<%xd(lock,1)|%xd(lock,3)>
+
+# Menu
+%Vi(menu,19,7,215,166,-)%Vf(808080)
+
+# Menu Title
+%Vl(info,65,223,190,16,6)%Vf(404040)
+%ac%s%Lt
+
+# if we are on the main screen, draw the list using viewport 'main'
+%?if(%cs, = , 1)<%Lb(MainMenuVP,71,55,tile)>
+
+# main viewport
+%Vl(MainMenuVP,0,0,71,55,1) # the coordinates here are relative to the %Lb's width and height
+%xl(M,wii_iconset.bmp,0,0,9) # normal icons
+%xl(S,wii_iconset_select.bmp,0,0,9) # selected icons
+%?Lc<%xd(S, %LN)|%xd(M, %LN)> # highlights selected icons
+
+# Disk Access
+%Vl(info,72,200,18,40,-)
+%?lh<%xd(disk,1)|%xd(disk,2)>
+
+# Playback Icons
+%Vl(info,250,72,35,35,-)
+%?if(%mp, >, 1)<%xd(playmodes,%mp)|>
+
+# Repeat Icon
+%Vl(info,236,128,33,33,-)
+%?mm<%xd(repeat,1)|%xd(repeat,2)|%xd(repeat,3)|%xd(repeat,4)|%xd(repeat,5)>
+
+# Shuffle Icon
+%Vl(info,267,128,33,33,-)
+%?ps<%xd(shuffle,2)|%xd(shuffle,1)>
+
+# Battery icon
+%Vl(info,246,19,42,16,-)%Vf(ffffff)
+%?St(usb charging)<%?bp<%xd(By)|%?bl<%xd(Bl)|%xd(Bk)|%xd(Bj)|%xd(Bi)|%xd(Bh)|%xd(Bg)|%xd(Bf)|%xd(Be)|%xd(Bd)|%xd(Bc)|%xd(Bb)|%xd(Ba)>>|%?bp<%?bc<%?bl<%xd(Bx)|%xd(Bw)|%xd(Bv)|%xd(Bu)|%xd(Bt)|%xd(Bs)|%xd(Br)|%xd(Bq)|%xd(Bp)|%xd(Bo)|%xd(Bn)|%xd(Bm)>|%xd(By)>|%?bl<%xd(Bl)|%xd(Bk)|%xd(Bj)|%xd(Bi)|%xd(Bh)|%xd(Bg)|%xd(Bf)|%xd(Be)|%xd(Bd)|%xd(Bc)|%xd(Bb)|%xd(Ba)>>>
+
+# Battery (numerical)
+%Vl(info,241,37,60,21,7)%Vf(ffffff)
+%ac%bl %%
+
+# Date
+%Vl(info,100,202,120,21,7)%Vf(404040)
+%ac%ca %cm/%cd
+
+# Time
+%Vl(info,122,170,70,34,4)%Vf(808080)
+%ac%?cf<%cH:%cM|%?cl<1|2|3|4|5|6|7|8|9|10|11|12>:%cM>
+%Vl(info,188,182,30,16,6)%Vf(808080)
+%ac%?cf<|%?cl<|||||||||||>%cP>
+
+# USB screen
+%Vl(usb_connected,3,13,231,143,-)
+%xd(usb_connected)
+
+# Disk Access
+%Vl(usb_connected,72,200,18,40,-)
+%?lh<%xd(disk,1)|%xd(disk,2)>
+
+# Playback Icons
+%Vl(usb_connected,250,72,35,35,-)
+%?if(%mp, >, 1)<%xd(playmodes,%mp)|>
+
+# Repeat Icon
+%Vl(usb_connected,236,128,33,33,-)
+%?mm<%xd(repeat,1)|%xd(repeat,2)|%xd(repeat,3)|%xd(repeat,4)|%xd(repeat,5)>
+
+# Shuffle Icon
+%Vl(usb_connected,267,128,33,33,-)
+%?ps<%xd(shuffle,2)|%xd(shuffle,1)>
+
+# Battery icon
+%Vl(usb_connected,246,19,42,16,-)%Vf(ffffff)
+%?St(usb charging)<%?bp<%xd(By)|%?bl<%xd(Bl)|%xd(Bk)|%xd(Bj)|%xd(Bi)|%xd(Bh)|%xd(Bg)|%xd(Bf)|%xd(Be)|%xd(Bd)|%xd(Bc)|%xd(Bb)|%xd(Ba)>>|%?bp<%?bc<%?bl<%xd(Bx)|%xd(Bw)|%xd(Bv)|%xd(Bu)|%xd(Bt)|%xd(Bs)|%xd(Br)|%xd(Bq)|%xd(Bp)|%xd(Bo)|%xd(Bn)|%xd(Bm)>|%xd(By)>|%?bl<%xd(Bl)|%xd(Bk)|%xd(Bj)|%xd(Bi)|%xd(Bh)|%xd(Bg)|%xd(Bf)|%xd(Be)|%xd(Bd)|%xd(Bc)|%xd(Bb)|%xd(Ba)>>>
+
+# Battery (numerical)
+%Vl(usb_connected,241,37,60,21,7)%Vf(ffffff)
+%ac%bl %%
+
+# Date
+%Vl(usb_connected,100,202,120,21,7)%Vf(404040)
+%ac%ca %cm/%cd
+
+# Time
+%Vl(usb_connected,122,170,70,34,4)%Vf(808080)
+%ac%?cf<%cH:%cM|%?cl<1|2|3|4|5|6|7|8|9|10|11|12>:%cM>
+%Vl(usb_connected,188,182,30,16,6)%Vf(808080)
+%ac%?cf<|%?cl<|||||||||||>%cP>

@@ -1,0 +1,143 @@
+# Theme: Win95-Wide
+# Version: 1.0 (10/15/2024)
+# Device: iPod Video (320x240)
+# License: CC-BY-SA
+# Creator:  Bonehead (Wide edit)
+#           Vera B (Original Win95 creator)
+
+# Changes made in the "wide" edition
+# - Very minor code cleanup
+# - Fixed current time set to anchor left side
+# - Album art size doubled
+# - Swapped artist/song. Song is now top and artist is bottom
+# - Track info moved to the slide (to accommodate the larger image)
+# - Added codec information 
+# - Added song in playlist count
+# - Removed unused UI elements (sorry)
+# - Fixed ghost outline in 95shuffle.bmp
+# - Changed battery colours to a green/yellow/red gradient
+# - Optimized 95largestatus.bmp (horizontal grouping, little gap, no previous icon)
+
+# Credits to other creators:
+# This theme wouldn't have been possible without the earlier work of:
+# creators of ipodmod3blk (K4sum1), ipodmod3blkfixed (Paul Sauro),
+# adwaitapod (evan Dook), iRetro (J Donsen), iPod reFresh (Ciprian Dragu)
+# For the WPS Player "CD Player" display, credits to u/opanic on Reddit
+# For the battery, hold, and disk access icons, credits to K4sum1
+# For the concept, credits to Microsoft.. but everyone already knows this lol
+# For the font, credits to Arne @ arnesava.com. Og font files can be found here:
+# https://arnesava.github.io/w95font/
+# Go listen to Andre Nickatina, The Pharcyde, Gangsta Pat, Tommy Wright III, Celly
+# Cel, Playa Fly, Al Kapone, Lil Keke, Geto Boys, Three 6 Mafia and Self Tightld,
+# who are my fav artists on my iPod that I feel deserve a shoutout!
+# Thank you so much for all the support this theme received on Reddit!
+# I hope you enjoy it :) <3
+# For suggestions/requests/other inquiries, dm me on Reddit: u/suzdali
+
+# Hide The Status Bar
+%wd
+
+# Load Backdrop
+%X(win95wps1.bmp)
+
+# Preload Fonts
+%Fl(2,14-W95_widefont.fnt)
+%Fl(3,20-W95_widefont.fnt)
+%Fl(4,16-W95_widefont.fnt)
+%Fl(5,18-W95_widefont.fnt)
+
+# Preload Images
+%xl(B,battery.bmp,0,0,24)
+%xl(C,win95pb.bmp,0,0)
+%xl(D,win95prog.bmp,0,0)
+%xl(E,win95ps.bmp,0,0)
+%xl(F,pbl.bmp,0,0)
+%xl(G,pbr.bmp,205,0)
+%xl(J,95mute.bmp,0,0,2)
+%xl(K,win95volback.bmp,0,0)
+%xl(L,win95vol.bmp,0,0)
+%xl(M,95shuffle.bmp,0,0)
+%xl(N,95repeat.bmp,0,0,5)
+%xl(O,Hold Icon - SBS.bmp,0,0)
+%xl(P,95largestatus.bmp,0,0,4)
+
+# Lock Hold Icon
+%V(5,3,7,10,-)
+%Vf(F4F4F4)%Vb(000000)
+%?mh<%xd(O)|%?mr<%xd(O)>>
+
+# ----- CD Player -----
+# Album Art Settings
+%Cl(0,0,96,96,c,c)
+# Album Art
+%V(29,69,96,96,-)
+%?C<%Cd>
+
+# Song Title
+%V(132,127,160,15,4)
+%Vf(000000)
+%al%s%?it<%s%it|%fn>
+# Song Artist
+%V(132,152,160,15,4)
+%Vf(000000)
+%al%s%?ia<%ia|%?d(2)<%d(2)|%Sx(Artist)>>
+
+# Player Repeat
+%V(157,70,20,18,-)
+%xd(N,%mm)
+# Player Shuffle
+%V(133,70,21,18,-)
+%?ps<%xd(M)>
+
+# Player Codec Information (from SlateyPod4)
+%V(184,74,92,15,4)
+%Vf(000000)
+%al%fc %| %fk khz%?rg<| %| %rg| %| %rg| %| %rg| %| %rg|> 
+
+# Player Play/Pause Buttons
+%V(155,95,112,22,-)
+%Vf(ffffff)%Vb(F4F4F4)
+%?mp<|%xd(Pa)|%xd(Pb)|%xd(Pc)|%xd(Pd)||||>
+
+# Song Current Time (left)
+%V(22,175,30,12,2)
+%Vf(000000)
+%ar%pc
+
+# Player Progress Bar
+# With a little hacking to make border look nice
+%V(57,172,207,15,-)
+%pb(0,0,207,15,D,backdrop,C,slider,E)
+
+# Song Remaining Time (right)
+%V(268,175,30,12,2)
+%Vf(000000)
+%al%pt
+
+# ----- Footer -----
+# Mute icon
+%V(5,220,16,16,-)
+%?pv<%xd(Jb)|%xd(Ja)|%xd(Ja)|%xd(Ja)>
+
+# Volume slider
+# With a little hacking to make border look nice
+%V(32,221,101,16,-)
+%pv(0,0,99,16,L,backdrop,K,slider,E)
+
+# Song\Playlist Count
+%V(138,224,78,12,2)
+%Vf(000000)
+%ac%pp/%pe
+
+# Battery
+%V(246,225,19,10,-)
+%?bp<%?bc<%t(1.0)%xd(Ba);%t(1.0)%xd(Bb)|%xd(Bc)>|%?bl<%xd(Bd)|%xd(Bd)|%xd(Be)|%xd(Bf)|%xd(Bg)|%xd(Bh)|%xd(Bi)|%xd(Bj)|%xd(Bk)|%xd(Bl)|%xd(Bm)|%xd(Bn)|%xd(Bo)|%xd(Bp)|%xd(Bq)|%xd(Br)|%xd(Bs)|%xd(Bt)|%xd(Bu)|%xd(Bv)|%xd(Bw)|%xd(Bx)>>#
+# Battery text
+%V(210,224,32,14,2)
+%Vf(000000)%Vb(000000)
+%ar%bl%%
+
+# Time Bar
+%V(280,224,30,14,2)
+%Vf(000000)%Vb(000000)
+%s%al%?cf<%cH:%cM|%cl:%cM>

@@ -1,0 +1,68 @@
+# Theme by chronicallyoffline <ben@chronicallyoffline.xyz>
+# CC-BY-SA
+# Credits to Chuck Lardo and D0-0K for inspiration and minor assets reused under CC-BY-SA and GPL V3 respectively.
+# chronicallyoffline.xyz
+# Date: 07-18-2024
+
+# Disable Status Bar
+%wd
+
+# Disable Title
+#%?Lt<|>
+
+
+
+# Preload Font
+%Fl(2,07-LanaPixel.fnt)
+%Fl(3,14-LanaPixel.fnt)
+%Fl(4,20-digital7mono.fnt)
+
+# Preload Images
+%xl(battery,battery.bmp,0,0,10)
+%xl(playmodes,playmodes.bmp,0,0,9)
+%xl(usb,usb.bmp,0,0)
+
+#__USB screen
+%?if(%cs, =, 21)<%VI(clearScreen)%Vd(usb)|%VI(menu)%Vd(info)>
+
+#__Clear Screen
+%Vi(clearScreen,0,0,1,1,-)
+
+# Display Viewports
+
+# Menu
+%Vi(menu,20,50,280,165,-)%Vf(-)%Vb(-)
+
+# Menu Title
+%Vl(info,25,13,100,13,2)
+%al%Lt
+
+# Clock
+%Vl(info,220,13,50,13,2)
+%ac%cl:%cM%cp
+
+# Battery (numerical)
+#%Vl(info,273,17,27,13,2)
+#%ar%bl%%
+
+#__Now Playing
+%Vl(info,48,211,232,16,2)
+%?if(%mp, >, 1)<%al%s%it - %ia - %id %(%ss(0,4, %iy)%)|>
+
+# Playback Icons
+%Vl(info,27,213,13,13,-)
+%?if(%mp, >, 1)<%xd(playmodes,%mp)|>
+
+# Battery (graphical)
+%Vl(info,277,17,23,10,-)
+?if(%bl, >, 90)<%xd(battery,10)|%?if(%bl, <, 90)<%xd(battery,9)|%?if(%bl, <, 80)<%xd(battery,8)|%?if(%bl, <, 70)<%xd(battery,7)|%?if(%bl, <, 60)<%xd(battery,6)|%?if(%bl, <, 50)<%xd(battery,5)|%?if(%bl, <, 40)<%xd(battery,4)|%?if(%bl, <, 30)<%xd(battery,3)|%?if(%bl, <, 20)<%xd(battery,2)|%?if(%bl, <, 10)<%xd(battery,1)>>>>>>>>>>
+
+#__USB
+%Vl(usb,30,30,260,130,-)
+%xd(usb)
+
+%Vl(usb,20,180,280,-,3)
+%acUSB CONNECTED
+
+%Vl(usb,20,210,280,-,2)
+%acEject Before Disconnecting

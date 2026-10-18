@@ -1,0 +1,116 @@
+# Theme: Wii_menu
+# Version 2.0
+# Last Update: 01/03/2026
+# Improved backgrounds, minor icon pixel art improvements, correcting text alignments, switched mii file names
+# License: CC-BY-SA 3.0
+# By: Monica G.
+# Description: Main menu based on the Nintendo Wii channel menu and WPS based on the Wii Mii maker!
+# The mii shown for no album art is set as the default male mii. To change to the default female mii, switch the file names of "mii_alternate" or "mii_album"
+# The male/female mii can also be edited in the wps file under # Preload images by replacing "%xl(mii,mii_album.bmp,0,0)" with "%xl(mii,mii_alternate.bmp,0,0)"
+# The code for the tile based menu screen code is based on win95 by Vera B!
+# Other coding is based on my previous theme (Rainbow_Icons, based on iPod reFresh by Ciprian Dragu (based on FreshOS by c-yu (yuuiko)) and SNARTY by Simon Anden)
+# Icons based on my previous themes: Rainbow_Icons, MOTHERBOARD. Volume icon is based on iPod reFresh by Ciprian Dragu.
+
+# Hide The Status Bar
+%wd
+
+# Load Backdrop
+%X(Wii_menu_wps.bmp)
+
+# Preload Fonts
+%Fl(5,12-Adobe-Helvetica-Bold.fnt)
+%Fl(6,16-Adobe-Helvetica.fnt)
+%Fl(7,21-Adobe-Helvetica-Bold.fnt)
+
+# Preload Images
+%xl(pb,pb.bmp,0,0)
+%xl(pb_back,pb_back.bmp,0,0)
+%xl(V,volume.bmp,0,0,21)
+%xl(B,battery.bmp,0,0,25)
+%xl(disk,disk_access.bmp,0,0,2)
+%xl(playmodes,playmodes.bmp,0,0,9)
+%xl(shuffle,shuffle.bmp,0,0,2)
+%xl(repeat,repeat_status.bmp,0,0,5)
+%xl(lock,lock.bmp,0,0,3)
+%xl(mii,mii_album.bmp,0,0)
+
+# Hold Status
+%V(30,5,12,16,-)
+%?mh<%xd(lock,1)|%xd(lock,2)>
+
+# Album Art
+%Cl(0,0,133,133)
+%V(4,59,133,145,-)
+%?C<%Cd|%xd(mii)>
+
+# Storage Access
+%V(5,194,18,40,-)
+%?lh<%xd(disk,1)|%xd(disk,2)>
+
+# Song Title
+%V(155,86,150,28,7)%Vf(000000)
+%al%s%?it<%s%it|%fn>
+
+# Artist
+%V(155,110,150,16,6)%Vf(000000)
+%al%?ia<%ia|%?d(2)<%d(2)|%Sx(Artist)>>
+
+# Album
+%V(155,68,150,16,6)%Vf(000000)
+%al%?id<%id>
+
+# Track Details
+%V(155,130,150,12,5)%Vf(363636)
+%s%al%?fc<MP1|MP2|MP3|AIFF|WAV|VORBIS|FLAC|MPC|AC3|WAVPACK|ALAC|AAC|SHORTEN|SID|ADX|NSF|SPEEX|SPC|APE|WMA|WMAPRO|MOD|SAP|COOK|AAC|AC3|ATRAC3|CMC|CM3|CMR|CMS|DMC|DLT|MPT|MPD|RMT|TMC|TM8|TM2|ATRAC3|SMAF|AU|VOX|WAVE64|TRUEAUDIO|WMAVOICE|MUSEPACK|AAC-HE|AY|VTX|GBS|HES|SGC|VGM|KSS|OPUS|AAC|UNKNOWN?> %?fv<~>%fbkbps%?iy< / %iy>
+
+# Progress Bar
+%V(40,230,240,3,0)
+%pb(0,0,240,3,pb,Wii_menu_wps,pb_back)
+
+# Song Current Time
+%V(5,225,32,14,5)%Vf(ffffff)
+%al%pc
+
+# Song Remaining Time
+%V(283,225,32,14,5)%Vf(ffffff)
+%ar%pr
+
+# Playlist Number
+%V(155,145,150,16,6)%Vf(363636)
+%?if(%pp, =, %pe)<%ac%s- %pp %Sx(of) %pe -|%ac%s- %pp %Sx(of) %pe -|%ac%s- %pp %Sx(of) %pe -|%ac%s- %pp %Sx(of) %pe -|%ac%s- %pp %Sx(of) %pe ->
+
+# Volume
+%V(70,1,36,36,-)
+%?pv<%xd(Va)|%xd(Vb)|%xd(Vc)|%xd(Vd)|%xd(Ve)|%xd(Vf)|%xd(Vg)|%xd(Vh)|%xd(Vi)|%xd(Vj)|%xd(Vk)|%xd(Vl)|%xd(Vm)|%xd(Vn)|%xd(Vo)|%xd(Vp)|%xd(Vq)|%xd(Vr)|%xd(Vs)|%xd(Vt)|%xd(Vu)>>
+
+# Time
+%V(12,23,52,12,5)%Vf(ffffff)
+%ac%?cf<%cH|%cl>:%cM%?cf<| %cP>
+
+# Playback Icons
+%V(120,1,35,35,-)
+%?if(%mp, >, 1)<%xd(playmodes,%mp)|>
+
+# Repeat Icon
+%V(168,2,33,33,-)
+%?mm<%xd(repeat,1)|%xd(repeat,2)|%xd(repeat,3)|%xd(repeat,4)|%xd(repeat,5)>
+
+# Shuffle Icon
+%V(216,2,33,33,-)
+%?ps<%xd(shuffle,2)|%xd(shuffle,1)>
+
+# Battery icon
+%V(263,6,42,16,-)%Vf(ffffff)
+%?St(usb charging)<%?bp<%xd(By)|%?bl<%xd(Bl)|%xd(Bk)|%xd(Bj)|%xd(Bi)|%xd(Bh)|%xd(Bg)|%xd(Bf)|%xd(Be)|%xd(Bd)|%xd(Bc)|%xd(Bb)|%xd(Ba)>>|%?bp<%?bc<%?bl<%xd(Bx)|%xd(Bw)|%xd(Bv)|%xd(Bu)|%xd(Bt)|%xd(Bs)|%xd(Br)|%xd(Bq)|%xd(Bp)|%xd(Bo)|%xd(Bn)|%xd(Bm)>|%xd(By)>|%?bl<%xd(Bl)|%xd(Bk)|%xd(Bj)|%xd(Bi)|%xd(Bh)|%xd(Bg)|%xd(Bf)|%xd(Be)|%xd(Bd)|%xd(Bc)|%xd(Bb)|%xd(Ba)>>>
+
+# Battery (numerical)
+%V(265,23,41,12,5)%Vf(ffffff)
+%ac%bl %%
+
+# Next track
+%V(155,168,150,16,6)%Vf(363636)
+%ar%?It<%Sx(Next Track:)|%Fn>
+%V(155,185,150,16,6)%Vf(363636)
+%s%ar%?It<%It|%Fn>
+%V(155,202,150,16,6)%Vf(363636)
+%s%ar%?Ia<%Ia>

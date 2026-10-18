@@ -1,0 +1,22 @@
+# Theme by chronicallyoffline <ben@chronicallyoffline.xyz>
+# CC-BY-SA
+# Credits to Chuck Lardo and D0-0K for inspiration and assets reused under CC-BY-SA and GPL V3 respectively.
+# chronicallyoffline.xyz
+# Date: 07-18-2024
+
+selector type: bar (inverse)
+statusbar: off
+scrollbar: off
+scrollbar width: 8
+volume display: graphic
+battery display: numeric
+foreground color: ff6500
+background color: 390c00
+font: /.rockbox/fonts/14-LanaPixel.fnt
+wps: /.rockbox/wps/OneBit.wps
+sbs: /.rockbox/wps/OneBit.sbs
+backdrop: -
+iconset: /.rockbox/icons/modone.bmp
+viewers iconset: /.rockbox/icons/modone_viewer.bmp
+filetype colours: -
+ui viewport: -
