@@ -1,0 +1,2 @@
+# Preserve byte-exact third-party skins (including intentional trailing spaces).
+.rockbox/** -whitespace

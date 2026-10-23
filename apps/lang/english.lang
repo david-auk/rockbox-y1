@@ -394,13 +394,27 @@
   desc: in the main menu and the settings menu
   user: core
   <source>
-    *: "Database"
+    *: "Music"
   </source>
   <dest>
-    *: "Database"
+    *: "Music"
   </dest>
   <voice>
-    *: "Database"
+    *: "Music"
+  </voice>
+</phrase>
+<phrase>
+  id: LANG_MEDIA
+  desc: in the main menu
+  user: core
+  <source>
+    *: "Media"
+  </source>
+  <dest>
+    *: "Media"
+  </dest>
+  <voice>
+    *: "Media"
   </voice>
 </phrase>
 <phrase>

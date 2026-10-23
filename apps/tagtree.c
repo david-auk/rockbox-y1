@@ -131,6 +131,8 @@ static uint32_t uniqbuf[UNIQBUF_SIZE / sizeof(uint32_t)];
 #define RELOAD_TAGTREE (-1024)
 
 static int(*qsort_fn)(const char*, const char*, size_t);
+static bool qsort_ignore_leading_the;
+
 /* dummmy functions to allow compatibility strncasecmp */
 static int strnatcasecmp_n(const char *a, const char *b, size_t n)
 {
@@ -384,6 +386,7 @@ static int get_tag(int *tag)
         TAG_MATCH("%format", var_format) \
         TAG_MATCH("%reload", menu_reload) \
         TAG_MATCH("filename", tag_filename) \
+        TAG_MATCH("mediatype", tag_mediatype) \
         TAG_MATCH("basename", tag_virt_basename) \
         TAG_MATCH("tracknum", tag_tracknumber) \
         TAG_MATCH("composer", tag_composer) \
@@ -910,6 +913,17 @@ static int compare(const void *p1, const void *p2)
 {
     struct tagentry *e1 = (struct tagentry *)p1;
     struct tagentry *e2 = (struct tagentry *)p2;
+
+    if (qsort_ignore_leading_the)
+    {
+        const char *name1 = tagcache_artist_sort_name(e1->name);
+        const char *name2 = tagcache_artist_sort_name(e2->name);
+        int result = qsort_fn(name1, name2, MAX_PATH);
+
+        if (result != 0)
+            return result;
+    }
+
     return qsort_fn(e1->name, e2->name, MAX_PATH);
 }
 
@@ -1620,7 +1634,8 @@ static int retrieve_entries(struct tree_context *c, int offset, bool init)
     /* Prevent duplicate entries in the search list. */
     tagcache_search_set_uniqbuf(&tcs, uniqbuf, UNIQBUF_SIZE);
 
-    if (level || is_basename|| csi->clause_count[0] || TAGCACHE_IS_NUMERIC(tag))
+    if (level || is_basename || csi->clause_count[0] ||
+        TAGCACHE_IS_NUMERIC(tag) || tagcache_is_artist_tag(tag))
         sort = true;
 
     for (i = 0; i < level; i++)
@@ -1683,30 +1698,8 @@ static int retrieve_entries(struct tree_context *c, int offset, bool init)
     tree_lock_cache(c);
     struct tagentry *dptr = core_get_data(c->cache.entries_handle);
 
-    if (tag != tag_title && tag != tag_filename)
-    {
-        if (offset == 0)
-        {
-            dptr->newtable = TABLE_ALLSUBENTRIES;
-            dptr->name = ID2P(LANG_TAGNAVI_ALL_TRACKS);
-            dptr->customaction = ONPLAY_NO_CUSTOMACTION;
-            dptr++;
-            current_entry_count++;
-            c->special_entry_count++;
-        }
-        if (offset <= 1)
-        {
-            dptr->newtable = TABLE_NAVIBROWSE;
-            dptr->name = ID2P(LANG_TAGNAVI_RANDOM);
-            dptr->extraseek = -1;
-            dptr->customaction = ONPLAY_NO_CUSTOMACTION;
-            dptr++;
-            current_entry_count++;
-            c->special_entry_count++;
-        }
-
-        total_count += 2;
-    }
+    /* Keep database lists free of automatic [All tracks] and [Random]
+     * entries. Shuffle is an explicit item in the Music menu instead. */
 
     while (tagcache_get_next(&tcs, tcs_buf, tcs_bufsz))
     {
@@ -1834,6 +1827,8 @@ entry_skip_formatter:
 
     if (sort)
     {
+        qsort_ignore_leading_the = tagcache_is_artist_tag(tag);
+
         if (global_settings.interpret_numbers)
             qsort_fn = sort_inverse ? strnatcasecmp_n_inv : strnatcasecmp_n;
         else

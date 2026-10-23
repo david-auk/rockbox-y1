@@ -1,0 +1,122 @@
+# Theme: crowPod
+# Version 1.0
+# Last Update: 06/25/2026
+# License: CC-BY-SA 3.0
+# By: Monica G.
+# Description: Crow theme!! All pixel art is by me. The picture on the menu changes according to the time of day (changes at 8 AM, 2 PM, and 6 PM). 
+# Code based on: bunnyPod by me! which are based on SNARTY by Simon Anden and BONES by Chuck Largo! Credits to J. Adler for ProFont-CJK. Other fonts used are Bitstream Cyberbit and LanaPixel by eishiya. Also inspired by RatPod by Jannis Bolzern! 
+# Caw caw!
+
+## WPS File ##
+
+#Hide The Status Bar
+%wd
+
+# Preload Backdrop #
+%xl(background,background.bmp,0,0)
+
+# Clear Backdrop
+%V(0,0,-,-,-)%VB
+%xd(background)
+%V(0,0,-,-,-)
+
+# Preload Fonts
+%Fl(6,07-LanaPixel.fnt)
+%Fl(7,15-ProFont-CJK.fnt)
+%Fl(9,23-Cyberbit.fnt)
+
+# Preload Images
+%xl(playmodes,playmodes.bmp,0,0,9)
+%xl(repeat,repeat_status.bmp,0,0,5)
+%xl(shuffle,shuffle.bmp,0,0,2)
+%xl(battery,battery.bmp,0,0,12)
+%xl(PB,pb.bmp,0,0)
+%xl(PBB,pb_back.bmp,0,0)
+%xl(VB,vb.bmp,0,0)
+%xl(VBB,vb_back.bmp,0,0)
+%xl(crow_album,crow_album.bmp,1,1)
+%xl(disk,disk.bmp,0,0,5)
+%xl(PS,ps.bmp,0,0)
+
+## Main Display ##
+%Vd(mainDisplay)
+
+# Clear Screen
+%Vl(mainDisplay,0,0,320,240,-)
+
+# Hold
+%Vl(mainDisplay,220,12,40,15,6)
+%ac%?mh<HOLD%Vs(invert)|>
+
+# Battery Icon
+%Vl(mainDisplay,265,10,22,18,-)
+%?bp<%xd(battery,7)|%?bl<%xd(battery,6)|%xd(battery,5)|%xd(battery,4)|%xd(battery,3)|%xd(battery,2)|%xd(battery,1)>>%?bp<%?bc<%?bl<%xd(battery,12)|%xd(battery,11)|%xd(battery,10)|%xd(battery,9)|%xd(battery,8)|%xd(battery,7)>|%?bl<%xd(battery,6)|%xd(battery,5)|%xd(battery,4)|%xd(battery,3)|%xd(battery,2)|%xd(battery,1)>>>
+
+# Disk
+%Vl(mainDisplay,290,10,20,20,-)
+%?lh<%t(0.1)%xd(disk,5);%t(0.1)%xd(disk,1);%t(0.1)%xd(disk,2);%t(0.1)%xd(disk,3);%t(0.1)%xd(disk,4)|%xd(disk,5)>
+
+# Line
+%Vl(mainDisplay,100,36,220,1,-)
+%dr(0,0,220,1)
+
+# Playlist Number
+%Vl(mainDisplay,80,224,140,12,6)
+%ac%pp / %pe
+
+# Play/Pause Icons
+%Vl(mainDisplay,110,7,22,22,-)
+%?if(%mp, >, 1)<%xd(playmodes,%mp)|>
+
+# Shuffle Icon
+%Vl(mainDisplay,138,6,25,22,-)
+%?ps<%xd(shuffle,1)|%xd(shuffle,2)>
+
+# Repeat Icon
+%Vl(mainDisplay,170,7,26,22,-)
+%?mm<%xd(repeat,5)|%xd(repeat,1)|%xd(repeat,2)|%xd(repeat,3)|%xd(repeat,4)>
+
+# Volume Bar
+%Vl(mainDisplay,85,60,230,6,-)
+%pv(0,0,230,6,VBB,backdrop,VB)
+
+# Volume Text
+%Vl(mainDisplay,250,66,60,12,6)
+%arVOL: %pvdb
+
+# Track Progress Bar
+%Vl(mainDisplay,8,211,268,11,-)%Vf(-)%Vb(-)
+%pb(0,0,-,11,PBB,backdrop,PB,slider,PS)
+
+# Time Elapsed
+%Vl(mainDisplay,20,224,50,12,6)
+%al%pc
+
+# Time Remaining
+%Vl(mainDisplay,230,224,50,12,6)
+%ar-%pr
+
+# Play Screen Album Art
+%Vl(mainDisplay,5,73,122,122,-)
+%Cl(1,1,120,120,c,c)
+%?C<%Cd|%xd(crow_album)>
+%dr(0,0,122,1)
+%dr(0,121,122,1)
+%dr(0,1,1,120)
+%dr(121,1,1,120)
+
+# Track Title
+%Vl(mainDisplay,135,88,180,25,9)
+%al%s%?it<%s%it|%fn>
+
+# Artist
+%Vl(mainDisplay,135,118,180,18,7)
+%al%s%?ia<%ia>
+
+# Album
+%Vl(mainDisplay,135,138,180,18,7)
+%al%s%?id<%id>
+
+# File Info
+%Vl(mainDisplay,100,40,210,15,6)
+%alYear: %?it<%?iy<%ss(0,4,%iy)|????>|> %ar%fc | %fb kbps | %fk kHz

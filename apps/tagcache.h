@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "system.h"
+#include "string-extra.h"
 #include "metadata.h"
 #include "settings.h"
 
@@ -35,7 +36,7 @@ enum tag_type { tag_artist = 0, tag_album, tag_genre, tag_title,
     tag_filename, tag_composer, tag_comment, tag_albumartist, tag_grouping, tag_year,
     tag_discnumber, tag_tracknumber, tag_virt_canonicalartist, tag_bitrate, tag_length,
     tag_playcount, tag_rating, tag_playtime, tag_lastplayed, tag_commitid, tag_mtime,
-    tag_lastelapsed, tag_lastoffset,
+    tag_lastelapsed, tag_lastoffset, tag_mediatype,
     /* Real tags end here, count them. */
     TAG_COUNT,
     /* Virtual tags */
@@ -44,6 +45,28 @@ enum tag_type { tag_artist = 0, tag_album, tag_genre, tag_title,
     tag_virt_playtime_min, tag_virt_playtime_sec,
     tag_virt_entryage, tag_virt_autoscore,
     TAG_COUNT_ALL};
+
+/* Artist-like tags share a natural alphabetical ordering that ignores an
+ * initial "The ". Keep the original tag text for display and filtering.
+ * This policy applies to Artist, Album Artist and Canonical Artist alike.
+ */
+static inline bool tagcache_is_artist_tag(int tag)
+{
+    return tag == tag_artist || tag == tag_albumartist ||
+           tag == tag_virt_canonicalartist;
+}
+
+static inline const char *tagcache_artist_sort_name(const char *name)
+{
+    return !strncasecmp(name, "The ", 4) ? name + 4 : name;
+}
+
+/* Media category derived from the file's location while scanning. */
+enum tagcache_media_type {
+    TAGCACHE_MEDIA_OTHER = 0,
+    TAGCACHE_MEDIA_MUSIC = 1,
+    TAGCACHE_MEDIA_PODCAST = 2,
+};
 
 /* How many entries to fetch to the seek table at once while searching. */
 #define SEEK_LIST_SIZE 32
@@ -64,6 +87,7 @@ enum tag_type { tag_artist = 0, tag_album, tag_genre, tag_title,
     (1LU << tag_playcount) | (1LU << tag_rating) | (1LU << tag_playtime) | \
     (1LU << tag_lastplayed) | (1LU << tag_commitid) | (1LU << tag_mtime) | \
     (1LU << tag_lastelapsed) | (1LU << tag_lastoffset) | \
+    (1LU << tag_mediatype) | \
     (1LU << tag_virt_length_min) | (1LU << tag_virt_length_sec) | \
     (1LU << tag_virt_playtime_min) | (1LU << tag_virt_playtime_sec) | \
     (1LU << tag_virt_entryage) | (1LU << tag_virt_autoscore))

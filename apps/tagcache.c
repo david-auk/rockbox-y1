@@ -245,10 +245,10 @@ static int NO_INLINE copy_playlist_with_absolute_paths(const char *src, const ch
 #define IDX_BUF_DEPTH 64
 
 /* Tag Cache Header version 'TCHxx'. Increment when changing internal structures. */
-#define TAGCACHE_MAGIC  0x54434810
+#define TAGCACHE_MAGIC  0x54434812
 
 /* Dump store/restore header version 'TCSxx'. */
-#define TAGCACHE_STATEFILE_MAGIC 0x54435301
+#define TAGCACHE_STATEFILE_MAGIC 0x54435303
 
 /* How much to allocate extra space for ramcache. */
 #define TAGCACHE_RESERVE 32768
@@ -343,7 +343,7 @@ static const char * const tags_str[] = { "artist", "album", "genre", "title",
     "filename", "composer", "comment", "albumartist", "grouping", "year",
     "discnumber", "tracknumber", "canonicalartist", "bitrate", "length",
     "playcount", "rating", "playtime", "lastplayed", "commitid", "mtime",
-    "lastelapsed", "lastoffset"
+    "lastelapsed", "lastoffset", "mediatype"
 #if !defined(LOGF_ENABLE)
 };
 #define logf_clauses(...) do { } while(0)
@@ -2331,6 +2331,52 @@ static int check_if_empty(char **tag)
     return length + 1;
 }
 
+/*
+ * Return true when path contains Library/<category>/ as complete path
+ * components. The SD-card prefix can differ between Android mounts, so only
+ * the stable Library/<category> suffix is used for classification.
+ */
+static bool path_is_library_category(const char *path, const char *category)
+{
+    static const char library_component[] = "Library/";
+    const size_t category_len = strlen(category);
+    const char *match = path;
+
+    while ((match = strcasestr(match, library_component)) != NULL)
+    {
+        if (match == path || match[-1] == '/')
+        {
+            const char *name = match + sizeof(library_component) - 1;
+
+            if (!strncasecmp(name, category, category_len)
+                && name[category_len] == '/')
+            {
+                return true;
+            }
+        }
+
+        match += sizeof(library_component) - 1;
+    }
+
+    return false;
+}
+
+/* Classify media by its project-defined library directory. */
+static int media_type_from_path(const char *path)
+{
+    if (path_is_library_category(path, "Music"))
+        return TAGCACHE_MEDIA_MUSIC;
+
+    /* Accept both spellings so an older directory layout keeps working. */
+    if (path_is_library_category(path, "Podcast")
+        || path_is_library_category(path, "Podcasts"))
+    {
+        return TAGCACHE_MEDIA_PODCAST;
+    }
+
+    return TAGCACHE_MEDIA_OTHER;
+}
+
 /* GCC 3.4.6 for Coldfire can choose to inline this function. Not a good
  * idea, as it uses lots of stack and is called from a recursive function
  * (check_dir).
@@ -2350,6 +2396,7 @@ static void NO_INLINE add_tagcache(char *path, unsigned long mtime)
     char tracknumfix[3];
     int offset = 0;
     int path_length = strlen(path);
+    int media_type = media_type_from_path(path);
     bool has_artist;
     bool has_grouping;
 
@@ -2403,14 +2450,24 @@ static void NO_INLINE add_tagcache(char *path, unsigned long mtime)
             return ;
         }
 
-        if ((unsigned long)idx.tag_seek[tag_mtime] == mtime)
+        if ((unsigned long)idx.tag_seek[tag_mtime] == mtime
+            && idx.tag_seek[tag_mediatype] == media_type)
         {
-            /* No changes to file. */
+            /* Neither file metadata nor its derived media category changed. */
             return ;
         }
 
-        /* Metadata might have been changed. Delete the entry. */
-        logf("Re-adding: %s", path);
+        if ((unsigned long)idx.tag_seek[tag_mtime] == mtime)
+        {
+            logf("Reclassifying media type %ld -> %d: %s",
+                 (long)idx.tag_seek[tag_mediatype], media_type, path);
+        }
+        else
+        {
+            logf("Re-adding: %s", path);
+        }
+
+        /* Metadata or a derived tag changed. Delete and rebuild the entry. */
         if (!delete_entry(idx_id))
         {
             logf("delete_entry failed: %d", idx_id);
@@ -2443,6 +2500,7 @@ static void NO_INLINE add_tagcache(char *path, unsigned long mtime)
     entry.tag_offset[tag_length] = id3.length;
     entry.tag_offset[tag_bitrate] = id3.bitrate;
     entry.tag_offset[tag_mtime] = mtime;
+    entry.tag_offset[tag_mediatype] = media_type;
 
     /* String tags. */
     has_artist = id3.artist != NULL
@@ -2604,7 +2662,29 @@ static int compare(const void *p1, const void *p2)
     return strncasecmp(e1->str, e2->str, TAG_MAXLEN);
 }
 
-static int tempbuf_sort(int fd)
+/* Artist, Album Artist and Canonical Artist all use the same sorting
+ * policy. The stored values and displayed names are not modified.
+ */
+static int compare_artist_tag(const void *p1, const void *p2)
+{
+    do_timed_yield();
+
+    const struct tempbuf_searchidx *e1 = p1;
+    const struct tempbuf_searchidx *e2 = p2;
+
+    if (strcmp(e1->str, UNTAGGED) == 0)
+        return strcmp(e2->str, UNTAGGED) == 0 ? 0 : -1;
+    if (strcmp(e2->str, UNTAGGED) == 0)
+        return 1;
+
+    int result = strncasecmp(tagcache_artist_sort_name(e1->str),
+                             tagcache_artist_sort_name(e2->str), TAG_MAXLEN);
+
+    /* Consistent order when names only differ by a leading article. */
+    return result != 0 ? result : strncasecmp(e1->str, e2->str, TAG_MAXLEN);
+}
+
+static int tempbuf_sort(int fd, int index_type)
 {
     struct tempbuf_searchidx *index = (struct tempbuf_searchidx *)tempbuf;
     struct tagfile_entry fe;
@@ -2641,7 +2721,12 @@ static int tempbuf_sort(int fd)
         do_timed_yield();
     }
 
-    qsort(index, tempbufidx, sizeof(struct tempbuf_searchidx), compare);
+    if (tagcache_is_artist_tag(index_type))
+        qsort(index, tempbufidx, sizeof(struct tempbuf_searchidx),
+              compare_artist_tag);
+    else
+        qsort(index, tempbufidx, sizeof(struct tempbuf_searchidx), compare);
+
     memset(lookup, 0, lookup_buffer_depth * sizeof(struct tempbuf_searchidx **));
 
     for (i = 0; i < tempbufidx; i++)
@@ -3255,7 +3340,7 @@ static int build_index(int index_type, struct tagcache_header *h, int tmpfd)
          */
         ftruncate(fd, lseek(fd, 0, SEEK_CUR));
 
-        i = tempbuf_sort(fd);
+        i = tempbuf_sort(fd, index_type);
         if (i < 0)
             goto error_exit;
         logf("sorted %d tags", i);

@@ -1,0 +1,134 @@
+#Theme Name: XPloRR
+#Platform: iPod Video/Classic 6G (320x240x16) - Standard build
+#Version: 2.6
+#Last updated: 21-02-2016
+#
+# WPS File
+#
+# Status bar, background
+%wd
+#
+# Additional fonts
+%Fl(2,10-Nimbus.fnt,15)
+#
+#
+# Battery
+%xl(a,batt.bmp,0,0,6)
+%V(8,0,25,25,-) 
+%?bp<%?bc<%xd(af)|%xd(ae)>|%?bl<||%xd(aa)|%xd(ab)|%xd(ac)|%xd(ad)|%xd(ad)>>
+%V(37,6,35,13,1)%Vf(B5B5B5)
+%al%bl%%
+#
+# Hold
+%xl(g,hold.bmp,0,0)
+%V(266,0,25,25,-)
+%?mh<%xd(g)|>
+#
+# HDD
+%xl(f,hdd.bmp,0,0)
+%V(291,0,22,25,-)
+%?lh<%xd(f)|>
+#
+# Clock
+%V(94,6,51,25,1)%Vf(B5B5B5)
+%?bs<%bs|%al%?cf<%cH:%cM|%cl:%cM %cp>>
+#
+# Album Art
+#
+%Cl(0,0,120,120,c,c)
+%V(17,46,120,120,-) 
+%Cd
+#
+# Current Song Icon
+%xl(c,currentSong.bmp,0,0)
+%V(156,49,10,11,-)
+%xd(c)
+#
+# Artist, Album, extra info
+#
+# Artist
+%V(155,66,160,15,1)%Vf(FFFFFF)
+%s%al%?ia<%ia|%?d(2)<%d(2)|%(unknown artist%)>>     
+#
+# Album
+%V(155,83,160,15,1)%Vf(FFFFFF)
+%s%al%?id<%id|%?d(1)<%d(1)|%(unknown album%)>>
+#
+# Ratings
+%xl(S,stars.bmp,0,0,6)
+%V(155,102,160,15,-)
+# RockBox Ratings
+%?rr<%xd(Sa)|%xd(Sb)|%xd(Sc)|%xd(Sd)|%xd(Se)|%xd(Sf)>
+# If using Tracknr. as rating, uncomment next lines and comment previous line
+#%xd(Sa)
+#%?if(%in, =, 1)<%xd(Sb)|>
+#%?if(%in, =, 2)<%xd(Sc)|>
+#%?if(%in, =, 3)<%xd(Sd)|>
+#%?if(%in, =, 4)<%xd(Se)|>
+#%?if(%in, =, 5)<%xd(Sf)|>
+#
+# Extra: Type, Compression, Year
+%V(155,117,160,15,1)%Vf(FFFFFF)
+%s%al%fc %?fv<~|>%fbkbps%?iy< %iy|>
+#
+# Number in playlist
+%V(155,134,160,15,1)%Vf(FFFFFF)
+%s%al%pp/%pe%?pn< %pn|>
+#
+# Next Song Icon
+%xl(N,nextSong.bmp,0,0)
+%V(156,151,10,11,-)
+%xd(N)
+#
+# Next Track
+%V(168,151,147,15,1)%Vf(FFFFFF)
+%s%al%?if(%ia, !=, %Ia)<%?Ia<%Ia - |>|>%?It<%It|%?Fn<%Fn|End>>
+#
+# Current Track
+%V(168,49,147,15,1)%Vf(FFFFFF)
+#%t(6)%s%al%?it<%it|%fn>;%t(12)%al%?it<%it|%fn>
+%s%al%?it<%it|%fn>;
+#
+# Progress Bar
+%V(0,184,320,5,-)
+%pb(0,0,320,5,pb.bmp)
+#
+# Track partial/total times
+%V(14,188,292,10,2)%Vf(B5B5B5)
+%al%pc%ar%pt
+#
+# Crossfade, Shuffle, Repeat
+%xl(h,shuffle.bmp,9,0)
+%xl(i,repeat.bmp,33,0,4)
+%xl(q,crossfade.bmp,64,0)
+%V(0,200,94,23,-)
+%?ps<%xd(h)|>
+%?mm<|%xd(ia)|%xd(ib)|%xd(ic)|%xd(id)>
+%?xf<|%xd(q)|%xd(q)|%xd(q)|%xd(q)|%xd(q)>
+#
+# Play, Pause, FFW, REW
+%xl(m,play.bmp,0,0)
+%xl(n,pause.bmp,0,0)
+%xl(o,next.bmp,0,0)
+%xl(p,prev.bmp,0,0)
+%V(87,200,134,23,-)
+%?mp<|%xd(m)|%xd(n)|%xd(o)|%xd(p)>
+#
+# Volume
+%xl(A,volumeicon.bmp,0,0,11)
+%V(221,200,21,23,-)
+%?pv<%xd(Aa)|%xd(Ab)|%xd(Ac)|%xd(Ad)|%xd(Ae)|%xd(Af)|%xd(Ag)|%xd(Ah)|%xd(Ai)|%xd(Aj)|%xd(Ak)>
+#
+%xl(B,volume.bmp,0,0)
+%V(245,206,61,11,-)
+%pv(0,0,-,-,nofill,nobar,slider,B)
+#
+#%V(238,221,62,15,1)%Vf(121212)
+#%ac%pv dB
+#
+# VU
+#%xl(x,vu1s.bmp,3,4)
+#%xl(y,vu1s.bmp,3,14)
+%V(154,4,105,22,-)
+%pR(3,4,102,4,vu1s.bmp)
+%pL(3,14,102,4,vu1s.bmp)
