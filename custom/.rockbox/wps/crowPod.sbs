@@ -49,9 +49,11 @@
 %Vl(mainMenu,5,36,310,1,-)
 %dr(0,0,310,2)
 
-# SBS Icon
+# SBS Icon - crow scene changes with the 24-hour clock (%cH).
+# 21:00-05:59 night (1), 06:00-08:59 sunrise (2),
+# 09:00-17:59 day (3), 18:00-20:59 sunset (4).
 %Vl(mainMenu,220,80,95,140,-)
-%?if(%cH, <, 0)<%xd(crow_sbs,1)|%?if(%cH, <, 8)<%xd(crow_sbs,2)|%?if(%cH, <, 14)<%xd(crow_sbs,3)|%?if(%cH, <, 18)<%xd(crow_sbs,4)|%xd(crow_sbs,1)>>>>
+%?if(%cH, <, 6)<%xd(crow_sbs,1)|%?if(%cH, <, 9)<%xd(crow_sbs,2)|%?if(%cH, <, 18)<%xd(crow_sbs,3)|%?if(%cH, <, 21)<%xd(crow_sbs,4)|%xd(crow_sbs,1)>>>>
 
 # Play/Pause Icons
 %Vl(mainMenu,10,7,22,22,-)

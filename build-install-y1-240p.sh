@@ -139,6 +139,46 @@ export ANDROID_NDK_ROOT="${ANDROID_NDK_ROOT:-$ANDROID_NDK_PATH}"
 log "Repository: $REPO_ROOT"
 log "Target: Innioasis Y1 240p (320x240)"
 
+# Fail before starting a build when the target cannot be installed.
+# Build-only mode (--no-install) deliberately does not require a connected Y1.
+check_y1_storage_before_build() {
+  require_cmd adb
+
+  local device_count
+  device_count="$(adb devices | awk 'NR > 1 && $2 == "device" { n++ } END { print n+0 }')" ||
+    die "Unable to enumerate ADB devices."
+  [[ "$device_count" == 1 ]] ||
+    die "Expected exactly one authorized Y1 over ADB (found $device_count). Check 'adb devices'."
+
+  local model
+  model="$(adb shell getprop ro.product.model 2>/dev/null | tr -d '\r')" ||
+    die "ADB disconnected while checking the device model."
+  [[ "$model" == *Y1* ]] ||
+    die "Connected ADB device is '$model', not an Innioasis Y1."
+
+  # USB Mass Storage makes /sdcard resolve to an unmounted 0 KB volume.
+  # This df invocation is supported by the Y1's older Android userspace.
+  local capacity
+  capacity="$(adb shell df /sdcard 2>/dev/null | tr -d '\r' | awk 'NR == 2 { print $2 }')" ||
+    die "Unable to inspect the Y1 /sdcard filesystem."
+  [[ -n "$capacity" && "$capacity" != 0 && "$capacity" != 0K ]] ||
+    die "Y1 /sdcard is unavailable (0 KB). Select 'Stop using USB mode' on the Y1."
+
+  local probe="/sdcard/.rockbox-preflight-$$-$RANDOM"
+  local write_result
+  write_result="$(adb shell "if touch '$probe' 2>/dev/null && rm -f '$probe'; then echo STORAGE_WRITABLE; else echo STORAGE_NOT_WRITABLE; fi" 2>/dev/null | tr -d '\r')" ||
+    die "ADB disconnected while testing /sdcard write access."
+  [[ "$write_result" == STORAGE_WRITABLE ]] ||
+    die "Y1 /sdcard is not writable. Select 'Stop using USB mode' on the Y1."
+
+  log "Y1 connected: $model; /sdcard mounted and writable (capacity: $capacity)"
+}
+
+if [[ "$INSTALL" == true ]]; then
+  log "Checking Y1 connection and storage before build"
+  check_y1_storage_before_build
+fi
+
 if [[ "$SETUP" == true ]]; then
   require_cmd brew
 

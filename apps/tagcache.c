@@ -2662,51 +2662,26 @@ static int compare(const void *p1, const void *p2)
     return strncasecmp(e1->str, e2->str, TAG_MAXLEN);
 }
 
-/*
- * Return the artist name used for sorting.
- *
- * A leading "The " is ignored case-insensitively, but the original string
- * remains unchanged in the database and is therefore still used for display.
- *
- * Examples:
- *   "The Doors"   -> "Doors"
- *   "The Beatles" -> "Beatles"
- *   "Therapy?"    -> "Therapy?"
+/* Artist, Album Artist and Canonical Artist all use the same sorting
+ * policy. The stored values and displayed names are not modified.
  */
-static const char *canonicalartist_sort_name(const char *name)
-{
-    if (!strncasecmp(name, "The ", 4))
-        return name + 4;
-
-    return name;
-}
-
-static int compare_canonicalartist(const void *p1, const void *p2)
+static int compare_artist_tag(const void *p1, const void *p2)
 {
     do_timed_yield();
 
-    struct tempbuf_searchidx *e1 = (struct tempbuf_searchidx *)p1;
-    struct tempbuf_searchidx *e2 = (struct tempbuf_searchidx *)p2;
+    const struct tempbuf_searchidx *e1 = p1;
+    const struct tempbuf_searchidx *e2 = p2;
 
     if (strcmp(e1->str, UNTAGGED) == 0)
-    {
-        if (strcmp(e2->str, UNTAGGED) == 0)
-            return 0;
-        return -1;
-    }
-    else if (strcmp(e2->str, UNTAGGED) == 0)
+        return strcmp(e2->str, UNTAGGED) == 0 ? 0 : -1;
+    if (strcmp(e2->str, UNTAGGED) == 0)
         return 1;
 
-    const char *name1 = canonicalartist_sort_name(e1->str);
-    const char *name2 = canonicalartist_sort_name(e2->str);
+    int result = strncasecmp(tagcache_artist_sort_name(e1->str),
+                             tagcache_artist_sort_name(e2->str), TAG_MAXLEN);
 
-    int result = strncasecmp(name1, name2, TAG_MAXLEN);
-
-    /* Keep ordering deterministic when normalized names are equal. */
-    if (result == 0)
-        return strncasecmp(e1->str, e2->str, TAG_MAXLEN);
-
-    return result;
+    /* Consistent order when names only differ by a leading article. */
+    return result != 0 ? result : strncasecmp(e1->str, e2->str, TAG_MAXLEN);
 }
 
 static int tempbuf_sort(int fd, int index_type)
@@ -2746,9 +2721,9 @@ static int tempbuf_sort(int fd, int index_type)
         do_timed_yield();
     }
 
-    if (index_type == tag_virt_canonicalartist)
+    if (tagcache_is_artist_tag(index_type))
         qsort(index, tempbufidx, sizeof(struct tempbuf_searchidx),
-              compare_canonicalartist);
+              compare_artist_tag);
     else
         qsort(index, tempbufidx, sizeof(struct tempbuf_searchidx), compare);
 

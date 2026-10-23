@@ -24,6 +24,7 @@
 
 #include "config.h"
 #include "system.h"
+#include "string-extra.h"
 #include "metadata.h"
 #include "settings.h"
 
@@ -44,6 +45,21 @@ enum tag_type { tag_artist = 0, tag_album, tag_genre, tag_title,
     tag_virt_playtime_min, tag_virt_playtime_sec,
     tag_virt_entryage, tag_virt_autoscore,
     TAG_COUNT_ALL};
+
+/* Artist-like tags share a natural alphabetical ordering that ignores an
+ * initial "The ". Keep the original tag text for display and filtering.
+ * This policy applies to Artist, Album Artist and Canonical Artist alike.
+ */
+static inline bool tagcache_is_artist_tag(int tag)
+{
+    return tag == tag_artist || tag == tag_albumartist ||
+           tag == tag_virt_canonicalartist;
+}
+
+static inline const char *tagcache_artist_sort_name(const char *name)
+{
+    return !strncasecmp(name, "The ", 4) ? name + 4 : name;
+}
 
 /* Media category derived from the file's location while scanning. */
 enum tagcache_media_type {

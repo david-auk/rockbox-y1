@@ -133,14 +133,6 @@ static uint32_t uniqbuf[UNIQBUF_SIZE / sizeof(uint32_t)];
 static int(*qsort_fn)(const char*, const char*, size_t);
 static bool qsort_ignore_leading_the;
 
-static const char *canonicalartist_sort_name(const char *name)
-{
-    if (!strncasecmp(name, "The ", 4))
-        return name + 4;
-
-    return name;
-}
-
 /* dummmy functions to allow compatibility strncasecmp */
 static int strnatcasecmp_n(const char *a, const char *b, size_t n)
 {
@@ -924,8 +916,8 @@ static int compare(const void *p1, const void *p2)
 
     if (qsort_ignore_leading_the)
     {
-        const char *name1 = canonicalartist_sort_name(e1->name);
-        const char *name2 = canonicalartist_sort_name(e2->name);
+        const char *name1 = tagcache_artist_sort_name(e1->name);
+        const char *name2 = tagcache_artist_sort_name(e2->name);
         int result = qsort_fn(name1, name2, MAX_PATH);
 
         if (result != 0)
@@ -1642,7 +1634,8 @@ static int retrieve_entries(struct tree_context *c, int offset, bool init)
     /* Prevent duplicate entries in the search list. */
     tagcache_search_set_uniqbuf(&tcs, uniqbuf, UNIQBUF_SIZE);
 
-    if (level || is_basename|| csi->clause_count[0] || TAGCACHE_IS_NUMERIC(tag))
+    if (level || is_basename || csi->clause_count[0] ||
+        TAGCACHE_IS_NUMERIC(tag) || tagcache_is_artist_tag(tag))
         sort = true;
 
     for (i = 0; i < level; i++)
@@ -1834,7 +1827,7 @@ entry_skip_formatter:
 
     if (sort)
     {
-        qsort_ignore_leading_the = (tag == tag_virt_canonicalartist);
+        qsort_ignore_leading_the = tagcache_is_artist_tag(tag);
 
         if (global_settings.interpret_numbers)
             qsort_fn = sort_inverse ? strnatcasecmp_n_inv : strnatcasecmp_n;
